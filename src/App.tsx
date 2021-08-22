@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent } from "react";
 import "./App.css";
+
+const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 function App() {
   const [password, setPassword] = useState("");
-  const [length, setLength] = useState(8);
+  const [length, setLength] = useState<number>(8);
   const [checkboxes, setCheckboxes] = useState({
     uppercase: true,
     lowercase: true,
@@ -18,14 +20,20 @@ function App() {
     if (checkboxes.uppercase) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     if (checkboxes.lowercase) chars += "abcdefghijklmnopqrstuvwxyz";
     if (checkboxes.numbers) chars += "0123456789";
+    if (checkboxes.symbols) chars += "~!@#$%^&*()_+-=,<.>/?;:'\"[{]}\\|";
 
-    console.log(chars);
+    pass = Array(length)
+      .fill(chars)
+      .map(function (x) {
+        return x[Math.floor(Math.random() * x.length)];
+      })
+      .join("");
 
-    // return pass;
+    setPassword(pass);
   }
 
-  function handleChange(e: any) {
-    setLength(e.target.value);
+  function handleLengthChange(e: any) {
+    setLength(Number(e.target.value));
   }
 
   function handleCheckbox(e: any) {
@@ -35,12 +43,21 @@ function App() {
     } as typeof checkboxes);
   }
 
+  function copyToClipboard(e: React.ChangeEvent<HTMLInputElement>) {
+    let result: any = document.getElementById("result")?.textContent;
+    navigator.clipboard.writeText(result);
+  }
+
   return (
     <div className="container">
       <h2>Password Generator</h2>
       <div className="result-container">
         <span id="result">{password}</span>
-        <button className="btn" id="clipboard">
+        <button
+          onClick={(event: any) => copyToClipboard(event)}
+          className="btn"
+          id="clipboard"
+        >
           <i className="far fa-clipboard"></i>
         </button>
       </div>
@@ -48,10 +65,10 @@ function App() {
         <div className="setting">
           <label>Password length: {length}</label>
           <input
-            onChange={(e) => handleChange(e)}
+            onChange={(e) => handleLengthChange(e)}
             type="range"
             min="8"
-            max="80"
+            max="32"
             value={length}
           />
         </div>
