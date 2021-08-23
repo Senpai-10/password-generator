@@ -1,9 +1,11 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState } from "react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import "./App.css";
 
 const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 function App() {
+  const [IsCopied, setIsCopied] = useState(false);
   const [password, setPassword] = useState("");
   const [length, setLength] = useState<number>(16);
   const [checkboxes, setCheckboxes] = useState({
@@ -43,9 +45,10 @@ function App() {
     } as typeof checkboxes);
   }
 
-  function copyToClipboard(e: React.ChangeEvent<HTMLInputElement>) {
-    let result: any = document.getElementById("result")?.textContent;
-    navigator.clipboard.writeText(result);
+  async function changeIcon() {
+    setIsCopied(true);
+    await wait(500);
+    setIsCopied(false);
   }
 
   return (
@@ -53,13 +56,15 @@ function App() {
       <h2>Password Generator</h2>
       <div className="result-container">
         <span id="result">{password}</span>
-        <button
-          onClick={(event: any) => copyToClipboard(event)}
-          className="btn"
-          id="clipboard"
-        >
-          <i className="far fa-clipboard"></i>
-        </button>
+        <CopyToClipboard text={password}>
+          <button onClick={changeIcon} className="btn" id="clipboard">
+            {IsCopied ? (
+              <i className="fas fa-check"></i>
+            ) : (
+              <i className="far fa-clipboard"></i>
+            )}
+          </button>
+        </CopyToClipboard>
       </div>
       <div className="settings">
         <div className="setting">
