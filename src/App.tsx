@@ -5,7 +5,7 @@ const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 function App() {
   const [password, setPassword] = useState("");
-  const [length, setLength] = useState<number>(8);
+  const [length, setLength] = useState<number>(16);
   const [checkboxes, setCheckboxes] = useState({
     uppercase: true,
     lowercase: true,
@@ -20,7 +20,7 @@ function App() {
     if (checkboxes.uppercase) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     if (checkboxes.lowercase) chars += "abcdefghijklmnopqrstuvwxyz";
     if (checkboxes.numbers) chars += "0123456789";
-    if (checkboxes.symbols) chars += "~!@#$%^&*()_+-=,<.>/?;:'\"[{]}\\|";
+    if (checkboxes.symbols) chars += "~!@#$%^&*()_+-=,<.>/?;:[{]}|";
 
     pass = Array(length)
       .fill(chars)
@@ -32,7 +32,7 @@ function App() {
     setPassword(pass);
   }
 
-  function handleLengthChange(e: any) {
+  function handleLengthRange(e: any) {
     setLength(Number(e.target.value));
   }
 
@@ -65,7 +65,7 @@ function App() {
         <div className="setting">
           <label>Password length: {length}</label>
           <input
-            onChange={(e) => handleLengthChange(e)}
+            onChange={(e) => handleLengthRange(e)}
             type="range"
             min="8"
             max="32"
